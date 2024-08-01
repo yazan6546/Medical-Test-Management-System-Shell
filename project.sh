@@ -1,4 +1,3 @@
-#! /bin/sh
 
 show_menu() {
   printf "________Medical Test Management System_________\n\n"
@@ -33,3 +32,35 @@ check_valid_date() {
   return 0
 }
 
+
+save_patients() {
+  arr=()
+  while IFS= read -r line; do
+  arr+=("$line")
+  done < "$1"
+}
+
+#
+# Function that takes patient ID and array and returns the index to the array
+#
+find_patient() {
+
+  count=0
+  for patient in "${arr[@]}"
+  do
+      id=$(echo "$patient" | cut -d":" -f1)
+      echo $id
+      if [ "$id" -eq "$1" ]
+      then
+        return $count
+      fi
+
+      count=$((count + 1))
+  done
+
+  return 255
+}
+
+save_patients medicalRecord.txt
+find_patient 1300511
+echo $?
