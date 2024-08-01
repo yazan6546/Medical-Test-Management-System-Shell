@@ -41,26 +41,42 @@ save_patients() {
 }
 
 #
-# Function that takes patient ID and array and returns the index to the array
+# Function that takes patient ID and prints all tests of this patient
 #
-find_patient() {
+
+find_patient_tests() {
 
   count=0
+  found=()
   for patient in "${arr[@]}"
   do
       id=$(echo "$patient" | cut -d":" -f1)
-      echo $id
       if [ "$id" -eq "$1" ]
       then
-        return $count
+        echo ${arr[$count]}
       fi
 
       count=$((count + 1))
   done
 
-  return 255
+}
+
+find_abnormal_patient_tests() {
+
+  count=0
+  found=()
+  for patient in "${arr[@]}"
+  do
+      id=$(echo "$patient" | cut -d":" -f1)
+      if [ "$id" -eq "$1" ]
+      then
+        echo ${arr[$count]}
+      fi
+
+      count=$((count + 1))
+  done
+
 }
 
 save_patients medicalRecord.txt
 find_patient 1300511
-echo $?
