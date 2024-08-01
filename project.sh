@@ -1,3 +1,5 @@
+#! /bin/sh
+
 show_menu() {
   printf "________Medical Test Management System_________\n\n"
   echo "1) Add a new medical test"
@@ -7,4 +9,27 @@ show_menu() {
   echo "5) Update an existing test result"
 }
 
-show_menu
+check_valid_date() {
+
+  if  ! echo "$1" | grep -qE '^[0-9]\{4\}-[0-9]\{2\}$'
+  then
+    return 1
+  fi
+
+  day=$(echo "$1" | cut -d"-" -f2)
+
+  if [ "$day" -lt 1 -a "$day" -gt 31 ]
+  then
+    return 2
+  fi
+
+  year=$(echo "$1" | cut -d"-" -f1)
+
+  if [ "$year" -lt 1900 -a "$year" -gt 2030 ]
+  then
+      return 3
+  fi
+
+  return 0
+}
+
