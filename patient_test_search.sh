@@ -43,6 +43,7 @@ handle_find_case() {
          echo "";;
 
       5) break;;
+      *) printf "Invalid option...\n\n"
     esac
   done
 }
