@@ -12,7 +12,7 @@ show_menu() {
 }
 
 show_find_menu() {
-  echo "1) Retrieve all patient tests"
+  printf "\n1) Retrieve all patient tests\n"
   echo "2) Retrieve all up normal patient tests"
   echo "3) Retrieve all patient tests in a given specific period"
   echo "4) Retrieve all patient tests based on test status"

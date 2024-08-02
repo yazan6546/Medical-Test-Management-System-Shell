@@ -23,9 +23,20 @@ handle_find_case() {
 
       1) echo "$patient_list"
          echo "";;
+
       2) find_abnormal_tests arr
          echo "";;
-      3) continue ;;
+
+      3) echo "Enter dates in this format exactly : YYYY-MM"
+         echo "Enter date 1"
+         read date1
+         check_valid_date "$date1" || { printf "Date is incorrect...\n"; continue; }
+         echo "Enter date 2"
+         read date2
+         check_valid_date "$date2" || { printf "Date is incorrect...\n"; continue; }
+
+         get_tests_from_date "$date1" "$date2" || printf "\nNo tests found in this period\n";;
+
       4) echo "Enter status"
          read status
          echo "$patient_list" | grep -i "${status}$"
@@ -34,6 +45,47 @@ handle_find_case() {
       5) break;;
     esac
   done
+}
+
+get_tests_from_date() {
+
+  flag=1
+  year1=$(echo "$1" | cut -d',' -f2 | cut -d'-' -f1)
+  month1=$(echo "$1" | cut -d',' -f2 | cut -d'-' -f2)
+
+  year2=$(echo "$2" | cut -d',' -f2 | cut -d'-' -f1)
+  month2=$(echo "$2" | cut -d',' -f2 | cut -d'-' -f2)
+
+  for test in "${arr[@]}"
+  do
+    year=$(echo "$test" | cut -d',' -f2 | cut -d'-' -f1)
+    month=$(echo "$test" | cut -d',' -f2 | cut -d'-' -f2)
+
+    if [ "$year" -gt "$year1" -a "$year" -lt "$year2" ]
+    then
+      echo "$test"
+      flag=0
+    elif [ "$year" -eq "$year1" -a "$year" -ne "$year2" -a "$month" -ge "$month1" ]
+    then
+      echo "$test"
+      flag=0
+
+    elif [ "$year" -eq "$year1" -a "$year" -eq "$year2" -a "$month" -ge "$month1" -a "$month" -le "$month2" ]
+    then
+      echo "$test"
+      flag=0
+
+    elif [ "$year" -eq "$year2" -a "$year" -ne "$year1" -a "$month" -le "$month2" ]
+    then
+      echo "$test"
+      flag=0
+    else
+      continue
+    fi
+
+  done
+
+  return "$flag"
 }
 
 find_abnormal_tests() {
@@ -117,23 +169,9 @@ find_tests() {
 
 check_valid_date() {
 
-  if  ! echo "$1" | grep -qE '^[0-9]\{4\}-[0-9]\{2\}$'
+  if  ! echo "$1" | grep -qE "^(19[0-9]{2}|20[0-2][0-9]|2030)-(0[1-9]|1[0-2])$"
   then
     return 1
-  fi
-
-  day=$(echo "$1" | cut -d"-" -f2)
-
-  if [ "$day" -lt 1 -a "$day" -gt 12 ]
-  then
-    return 2
-  fi
-
-  year=$(echo "$1" | cut -d"-" -f1)
-
-  if [ "$year" -lt 1900 -a "$year" -gt 2030 ]
-  then
-      return 3
   fi
 
   return 0
@@ -151,3 +189,4 @@ find_patient_tests() {
     arr+=("$line")
   done < <(grep "^$1" medicalRecord.txt)
 }
+
