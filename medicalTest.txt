@@ -1,4 +1,4 @@
-HGB;>13.8,<17.2;g/dL
+RBC;>13.8,<17.2;g/dL
 BGT;>70,<99;mg/dL
 LDL;<100;mg/dL
 systole;<120;mmHg

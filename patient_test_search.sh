@@ -1,23 +1,3 @@
-
-show_menu() {
-  printf "________Medical Test Management System_________\n\n"
-  echo "1) Add a new medical test"
-  echo "2) Search for a test by patient ID"
-  echo "3) Search for all abnormal tests"
-  echo "4) Get the average test values"
-  echo "5) Update an existing test result"
-  echo "6) Exit program"
-  echo ""
-}
-
-show_find_menu() {
-  echo "1) Retrieve all patient tests"
-  echo "2) Retrieve all up normal patient tests"
-  echo "3) Retrieve all patient tests in a given specific period"
-  echo "4) Retrieve all patient tests based on test status"
-  echo "5) Go back to menu"
-}
-
 handle_find_case() {
 
   find_patient_tests $1 # saves all patients with input id in an array "arr"
@@ -43,9 +23,20 @@ handle_find_case() {
 
       1) echo "$patient_list"
          echo "";;
+
       2) find_abnormal_tests arr
          echo "";;
-      3) continue ;;
+
+      3) echo "Enter dates in this format exactly : YYYY-MM"
+         echo "Enter date 1"
+         read date1
+         check_valid_date "$date1" || { printf "Date is incorrect...\n"; continue; }
+         echo "Enter date 2"
+         read date2
+         check_valid_date "$date2" || { printf "Date is incorrect...\n"; continue; }
+
+         get_tests_from_date "$date1" "$date2" || printf "\nNo tests found in this period\n";;
+
       4) echo "Enter status"
          read status
          echo "$patient_list" | grep -i "${status}$"
@@ -54,6 +45,47 @@ handle_find_case() {
       5) break;;
     esac
   done
+}
+
+get_tests_from_date() {
+
+  flag=1
+  year1=$(echo "$1" | cut -d',' -f2 | cut -d'-' -f1)
+  month1=$(echo "$1" | cut -d',' -f2 | cut -d'-' -f2)
+
+  year2=$(echo "$2" | cut -d',' -f2 | cut -d'-' -f1)
+  month2=$(echo "$2" | cut -d',' -f2 | cut -d'-' -f2)
+
+  for test in "${arr[@]}"
+  do
+    year=$(echo "$test" | cut -d',' -f2 | cut -d'-' -f1)
+    month=$(echo "$test" | cut -d',' -f2 | cut -d'-' -f2)
+
+    if [ "$year" -gt "$year1" -a "$year" -lt "$year2" ]
+    then
+      echo "$test"
+      flag=0
+    elif [ "$year" -eq "$year1" -a "$year" -ne "$year2" -a "$month" -ge "$month1" ]
+    then
+      echo "$test"
+      flag=0
+
+    elif [ "$year" -eq "$year1" -a "$year" -eq "$year2" -a "$month" -ge "$month1" -a "$month" -le "$month2" ]
+    then
+      echo "$test"
+      flag=0
+
+    elif [ "$year" -eq "$year2" -a "$year" -ne "$year1" -a "$month" -le "$month2" ]
+    then
+      echo "$test"
+      flag=0
+    else
+      continue
+    fi
+
+  done
+
+  return "$flag"
 }
 
 find_abnormal_tests() {
@@ -95,14 +127,20 @@ is_abnormal() {
     compare2=$(echo "$field_range" | cut -d',' -f2 | cut -c1)
     number2=$(echo "$field_range" | cut -d',' -f2 | cut -c2-) # get normal test result
 
-    if [ \( "$compare1" = "<" -a "$test_result" -gt "$number1" \) -o  \( "$compare1" = ">" -a "$test_result" -lt "$number1" \) ]
+    result1=$(echo "$test_result > $number1" | bc )
+    result2=$(echo "$test_result < $number1" | bc )
+
+    if [ \( "$compare1" = "<" -a "$result1" -eq 1 \) -o  \( "$compare1" = ">" -a "$result2" -eq 1 \) ]
     then
         return 0
     fi
 
+    result1=$(echo "$test_result > $number2" | bc )
+    result2=$(echo "$test_result < $number2" | bc )
+
     if [ "$number_values" -eq 2 ]
     then
-      if [ \( "$compare2" = "<" -a "$test_result" -gt "$number2" \) -o  \( "$compare2" = ">" -a "$test_result" -lt "$number2" \) ]
+      if [ \( "$compare2" = "<" -a "$result1" -eq 1 \) -o  \( "$compare2" = ">" -a "$result2" -eq 1 \) ]
       then
         return 0
       fi
@@ -114,7 +152,7 @@ is_abnormal() {
 
 #
 # Function that returns an array containing medical tests
-# given the medical test
+# given the medical test name
 #
 find_tests() {
   arr_tests=()
@@ -131,23 +169,9 @@ find_tests() {
 
 check_valid_date() {
 
-  if  ! echo "$1" | grep -qE '^[0-9]\{4\}-[0-9]\{2\}$'
+  if  ! echo "$1" | grep -qE "^(19[0-9]{2}|20[0-2][0-9]|2030)-(0[1-9]|1[0-2])$"
   then
     return 1
-  fi
-
-  day=$(echo "$1" | cut -d"-" -f2)
-
-  if [ "$day" -lt 1 -a "$day" -gt 12 ]
-  then
-    return 2
-  fi
-
-  year=$(echo "$1" | cut -d"-" -f1)
-
-  if [ "$year" -lt 1900 -a "$year" -gt 2030 ]
-  then
-      return 3
   fi
 
   return 0
@@ -165,57 +189,4 @@ find_patient_tests() {
     arr+=("$line")
   done < <(grep "^$1" medicalRecord.txt)
 }
-
-filter_spaces() {
-  cat "$1" | tr -d " " > temp
-  mv temp "$1"
-}
-
-remove_blank_lines() {
-  sed '/^$/d' "$1" > temp
-  mv temp "$1"
-}
-
-
-
-filter_spaces medicalRecord.txt
-filter_spaces medicalTest.txt
-
-remove_blank_lines medicalRecord.txt
-remove_blank_lines medicalTest.txt
-
-#find_patient_tests 1300511
-#
-#echo "${arr[@]}" | tr " " "\n"
-
-while true; do
-  show_menu
-  echo "Choose your option."
-  read option
-
-  case "$option"
-  in
-
-  1) ;;
-  2)
-    echo "enter patient ID"
-    read id
-    handle_find_case "$id"
-    ;;
-
-  3)
-    echo "enter test name"
-    read test_name
-    find_tests "$test_name"
-    echo ""
-    ;;
-
-  4);;
-  5);;
-  6) exit 0;;
-  *) echo "Wrong option!";;
-
-  esac
-done
-
 

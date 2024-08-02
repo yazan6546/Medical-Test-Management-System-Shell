@@ -1,7 +1,7 @@
-1300500:RBC,2024-03,13.5,mg/dL,completed
-1300500:RBC,2024-03,13.5,mg/dL,completed
+1300500:RBC,2024-03,13.8,mg/dL,completed
+1300500:RBC,2024-03,13.9,mg/dL,completed
 1300511:LDL,2024-03,110,mg/dL,pending
-1300511:LDL,2024-03,98,mg/dL,pending
-1300511:BGT,2024-04,98,mg/dL,Completed
+1300511:LDL,2024-032,98,mg/dL,pending
+1300511:BGT,2024-04,100.001,mg/dL,Completed
 1300511:diastole,2024-03,81,mg/dL,pending
 1300512:LDL,2024-03,104,mg/dL,pending
