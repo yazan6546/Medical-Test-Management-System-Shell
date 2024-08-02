@@ -106,13 +106,21 @@ find_patient_tests() {
 filter_spaces() {
   cat "$1" | tr -d " " > temp
   mv temp "$1"
+}
 
+remove_blank_lines() {
+  sed '/^$/d' "$1" > temp
+  mv temp "$1"
 }
 
 
 
 filter_spaces medicalRecord.txt
 filter_spaces medicalTest.txt
+
+remove_blank_lines medicalRecord.txt
+remove_blank_lines medicalTest.txt
+
 #find_patient_tests 1300511
 #
 #echo "${arr[@]}" | tr " " "\n"
