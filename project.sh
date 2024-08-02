@@ -43,7 +43,8 @@ handle_find_case() {
 
       1) echo "$patient_list"
          echo "";;
-      2) find_abnormal_tests ;;
+      2) find_abnormal_tests
+         echo "";;
       3) continue ;;
       4) echo "Enter status"
          read status
@@ -76,27 +77,25 @@ is_abnormal() {
     field_range=$(echo "$test_info" | cut -d';' -f2) # >number1,<number2
     number_values=$(echo "$field_range" | tr "," " " | wc -w)
 
-    compare=$(echo "$field_range" | cut -c1) # get the compare operator
+    compare1=$(echo "$field_range" | cut -c1) # get the compare operator
     number1=$(echo "$field_range" | cut -d',' -f1 | cut -c2-) # get normal test result
 
-    echo "$compare"
-    echo "$number1"
-    echo "$test_result"
+    compare2=$(echo "$field_range" | cut -d',' -f2 | cut -c1)
+    number2=$(echo "$field_range" | cut -d',' -f2 | cut -c2-) # get normal test result
+
+    if [ \( "$compare1" = "<" -a "$test_result" -gt "$number1" \) -o  \( "$compare1" = ">" -a "$test_result" -lt "$number1" \) ]
+    then
+        return 0
+    fi
 
     if [ "$number_values" -eq 2 ]
     then
-      :
+      if [ \( "$compare2" = "<" -a "$test_result" -gt "$number2" \) -o  \( "$compare2" = ">" -a "$test_result" -lt "$number2" \) ]
+      then
+        return 0
+      fi
     fi
 
-    if echo "$field_range" | cut -d',' -f2 > /dev/null
-    then
-      :
-    fi
-
-    if [ \( "$compare" = "<" -a "$test_result" -gt "$number1" \) -o  \( "$compare" = ">" -a "$test_result" -lt "$number1" \) ]
-    then
-      return 0
-    fi
 
     return 1
 }
