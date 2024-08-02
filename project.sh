@@ -20,6 +20,9 @@ show_find_menu() {
 handle_find_case() {
 
   find_patient_tests $1 # saves all patients with input id in an array "arr"
+
+  # Convert array to newline-separated list
+  patient_list=$(printf "%s\n" "${arr[@]}")
   while true; do
 
   show_find_menu
@@ -30,13 +33,13 @@ handle_find_case() {
   case "$option"
   in
 
-      1) echo "${arr[@]}" | tr " " "\n"
+      1) echo "$patient_list"
          echo "";;
       2) continue ;;
       3) continue ;;
       4) echo "Enter status"
          read status
-         echo "${arr[@]}" | tr " " "\n" | grep -i "${status}$"
+         echo "$patient_list" | grep -i "${status}$"
          echo "";;
 
       5) break;;
@@ -53,7 +56,7 @@ check_valid_date() {
 
   day=$(echo "$1" | cut -d"-" -f2)
 
-  if [ "$day" -lt 1 -a "$day" -gt 31 ]
+  if [ "$day" -lt 1 -a "$day" -gt 12 ]
   then
     return 2
   fi
