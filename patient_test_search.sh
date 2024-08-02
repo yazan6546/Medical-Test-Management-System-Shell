@@ -75,14 +75,20 @@ is_abnormal() {
     compare2=$(echo "$field_range" | cut -d',' -f2 | cut -c1)
     number2=$(echo "$field_range" | cut -d',' -f2 | cut -c2-) # get normal test result
 
-    if [ \( "$compare1" = "<" -a "$test_result" -gt "$number1" \) -o  \( "$compare1" = ">" -a "$test_result" -lt "$number1" \) ]
+    result1=$(echo "$test_result > $number1" | bc )
+    result2=$(echo "$test_result < $number1" | bc )
+
+    if [ \( "$compare1" = "<" -a "$result1" -eq 1 \) -o  \( "$compare1" = ">" -a "$result2" -eq 1 \) ]
     then
         return 0
     fi
 
+    result1=$(echo "$test_result > $number2" | bc )
+    result2=$(echo "$test_result < $number2" | bc )
+
     if [ "$number_values" -eq 2 ]
     then
-      if [ \( "$compare2" = "<" -a "$test_result" -gt "$number2" \) -o  \( "$compare2" = ">" -a "$test_result" -lt "$number2" \) ]
+      if [ \( "$compare2" = "<" -a "$result1" -eq 1 \) -o  \( "$compare2" = ">" -a "$result2" -eq 1 \) ]
       then
         return 0
       fi
