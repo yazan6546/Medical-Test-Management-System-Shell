@@ -2,5 +2,5 @@
 1300511:LDL,2024-03,110,mg/dL,pending
 1300511:LDL,2024-03,110,mg/dL,pending
 1300511:WEF,2024-03,110,mg/dL,pending
-1300511:LDL,2024-04,110,mg/dL,pending
+1300511:LDL,2024-04,110,mg/dL,Completed
 1300512:LDL,2024-03,110,mg/dL,pending

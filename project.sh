@@ -34,7 +34,11 @@ handle_find_case() {
          echo "";;
       2) continue ;;
       3) continue ;;
-      4) continue ;;
+      4) echo "Enter status"
+         read status
+         echo "${arr[@]}" | tr " " "\n" | grep -i "${status}$"
+         echo "";;
+
       5) break;;
     esac
   done
@@ -108,6 +112,7 @@ filter_spaces() {
 
 
 filter_spaces medicalRecord.txt
+filter_spaces medicalTest.txt
 #find_patient_tests 1300511
 #
 #echo "${arr[@]}" | tr " " "\n"
