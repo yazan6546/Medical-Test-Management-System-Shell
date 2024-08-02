@@ -61,12 +61,14 @@ correct_date_format="^[1-2][0-9][0-9][0-9]-[0-1][0-9]$" #the exact date format t
 current_month=$(date +%m)
 current_year=$(date +%Y)
 
+
+#function to check if the date provided is in past or present
 is_date_in_past() {
-        input_year=$(echo "$test_date" | cut -d"-" -f1)
-        input_month=$(echo "$test_date" | cut -d"-" -f2)
+        input_year=$(echo $test_date | cut -d"-" -f1)
+        input_month=$(echo $test_date | cut -d"-" -f2)
 	
-        if { [[ "$input_year" -lt "$current_year" ]] && [[ $((10#$input_month)) -le 12 ]]; } || 
-        { [[ "$input_year" -eq "$current_year" ]] && [[ $((10#$input_month)) -le $((10#$current_month)) ]]; }; 
+        if { [[ $input_year -lt $current_year ]] && [[ $((10#$input_month)) -le 12 ]]; } || 
+        { [[ $input_year -eq $current_year ]] && [[ $((10#$input_month)) -le $((10#$current_month)) ]]; }; 
         then
 		echo "0"
     	else
@@ -76,7 +78,7 @@ is_date_in_past() {
 
 is_past=$(is_date_in_past)
 
-until [[ $test_date =~ $correct_date_format && "$is_past" == 0 ]] #asks for re-ensertion until the input is correct 
+until [[ $test_date =~ $correct_date_format && $is_past == 0 ]] #asks for re-ensertion until the input is correct 
 do
 	echo "incorrect date formatting, please insert date in the format YYYY-MM or enter -1 to exit insertion"
 	read test_date
@@ -92,3 +94,72 @@ do
 		exit 3
 	fi
 done
+
+
+
+#test result insertion
+
+echo "Insert test result:"
+
+read test_result
+
+until [[ $test_result =~ ^-?[0-9]+\.?[0-9]*$ ]]
+do
+	echo "The test result must be a floating point number, make sure to enter the result correctly or enter -1 to exit (if a test result is -1, write it as -1.0)."
+
+	read test_result
+	if [ $test_result == -1 ]
+        then
+                echo "Insertion cancelled"
+                exit 4
+        fi 
+done
+
+
+#test unit insertion
+
+
+echo "Insert the unit of the result:"
+
+read test_unit
+
+while [[ -z $test_unit  ]]
+do
+	echo "please enter a valid unit or -1 to exit."
+	read test_unit
+
+	if [ $test_unit == -1 ]
+        then
+                echo "Insertion cancelled"
+                exit 5
+        fi
+
+done
+
+
+#test unit insertion
+
+
+echo "Insert the status of the test:"
+
+read test_status
+
+while [[ -z $test_status  ]]
+do
+        echo "please enter a valid status or -1 to exit."
+        read test_status
+
+        if [ $test_status == -1 ]
+        then
+                echo "Insertion cancelled"
+                exit 5
+        fi
+
+done
+
+
+
+
+echo "$record_id: $test_name, $test_date, $test_result, $test_unit, $test_status" >> medicalRecord.txt
+
+echo "Insertion completed successfully!"
