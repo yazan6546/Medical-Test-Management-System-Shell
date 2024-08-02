@@ -43,7 +43,7 @@ handle_find_case() {
 
       1) echo "$patient_list"
          echo "";;
-      2) find_abnormal_tests
+      2) find_abnormal_tests arr
          echo "";;
       3) continue ;;
       4) echo "Enter status"
@@ -58,7 +58,11 @@ handle_find_case() {
 
 find_abnormal_tests() {
 
-  for patient in "${arr[@]}"
+  local array_name="$1"
+  local -n tests="${array_name}"
+
+  flag=0 # a flag to point to whether an abnormal test has been found
+  for patient in "${tests[@]}"
   do
     test_name=$(echo "$patient" | cut -d':' -f2 | cut -d',' -f1)
     test_result=$(echo "$patient" | cut -d':' -f2 | cut -d',' -f3)
@@ -66,8 +70,16 @@ find_abnormal_tests() {
     if is_abnormal "$test_name" "$test_result"
     then
       echo "$patient"
+      flag=1
     fi
+
   done
+
+  if [ "$flag" -eq 0 ]
+  then
+    echo "No abnormal tests found..."
+    echo ""
+  fi
 }
 
 is_abnormal() {
@@ -100,6 +112,22 @@ is_abnormal() {
     return 1
 }
 
+#
+# Function that returns an array containing medical tests
+# given the medical test
+#
+find_tests() {
+  arr_tests=()
+
+  while IFS= read -r line; do
+    arr_tests+=("$line")
+  done < <(grep -i "$1" medicalRecord.txt)
+
+  find_abnormal_tests arr_tests
+
+}
+
+
 
 check_valid_date() {
 
@@ -125,33 +153,11 @@ check_valid_date() {
   return 0
 }
 
-
-#save_patients() {
-#  arr=()
-#  while IFS= read -r line; do
-#  arr+=("$line")
-#  done < "$1"
-#}
-
 #
 # Function that takes patient ID and returns an array of all tests of this patient
 #
 
 find_patient_tests() {
-
-#  count=0
-#  found=()
-#  for patient in "${arr[@]}"
-#  do
-#      id=$(echo "$patient" | cut -d":" -f1)
-#      if [ "$id" -eq "$1" ]
-#      then
-#        echo "${arr[$count]}"
-#      fi
-#
-#      count=$((count + 1))
-#  done\
-
 
   arr=()
 
@@ -194,9 +200,16 @@ while true; do
   2)
     echo "enter patient ID"
     read id
-    handle_find_case $id
+    handle_find_case "$id"
     ;;
-  3);;
+
+  3)
+    echo "enter test name"
+    read test_name
+    find_tests "$test_name"
+    echo ""
+    ;;
+
   4);;
   5);;
   6) exit 0;;
