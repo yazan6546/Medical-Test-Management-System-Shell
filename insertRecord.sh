@@ -12,7 +12,6 @@ is_date_in_past() {
     	fi
 }
 
-
 echo "Please insert a new record: "
 
 
@@ -71,7 +70,7 @@ echo "Format: YYYY-MM" #the date format
 
 read test_date
 
-correct_date_format="^[1-2][0-9][0-9][0-9]-[0-1][0-9]$" #the exact date format that should be followed
+correct_date_format="^(19[0-9]{2}|20[0-2][0-9]|2030)-(0[1-9]|1[0-2])$" #the exact date format that should be followed
 
 current_month=$(date +%m)
 current_year=$(date +%Y)
@@ -89,7 +88,7 @@ do
 		is_past=$(is_date_in_past "$test_date")
 	fi
 
-	if [ "$test_date" -eq -1 ]
+	if [[ "$test_date" == "-1" ]]
 	then
 		echo "Insertion cancelled"
 		exit 3
@@ -129,7 +128,7 @@ do
         echo "please enter a valid status or -1 to exit."
         read test_status
 
-        if [ $test_status == -1 ]
+        if [[ $test_status == "-1" ]]
         then
                 echo "Insertion cancelled"
                 exit 5
