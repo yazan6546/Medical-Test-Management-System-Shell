@@ -4,7 +4,7 @@ handle_find_case() {
 
   if [ "${#arr[@]}" -eq 0 ]
   then
-      echo "ID not found..."
+      echo "ID not found...."
       echo ""
       return 1
   fi
