@@ -6,3 +6,4 @@
 1300511:diastole,2024-03,81,mg/dL,pending
 1234567:rbc,1000-12,12.5,g/dL,COMPLETED
 1234567:rbc,1999-12,10.9,g/dL,completed
+1234241:rbc,1999-12,10.0,g/dL,completed
