@@ -77,7 +77,11 @@ while true; do
     echo ""
     ;;
 
-  4) ./getTestAvgs.sh;;
+  4)
+    printf "\n________ Statistics _________\n\n"
+    ./getTestAvgs.sh
+    printf "\n\n";;
+
   5) ./updateTestVal.sh;;
   6) exit 0;;
   *) printf "Invalid option...\n\n";;
