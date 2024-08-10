@@ -39,7 +39,7 @@ handle_find_case() {
 
       4) echo "Enter status"
          read status
-         echo "$patient_list" | grep -i "${status}$"
+         echo "$patient_list" | grep -i "${status}$" || printf "\nNo tests found..."
          echo "";;
 
       5) break;;

@@ -30,7 +30,21 @@ remove_blank_lines() {
   mv temp "$1"
 }
 
+check_file() {
 
+file_name=$1
+  if [ ! -w "$file_name" ]
+  then
+      echo "$file_name Does not exist or is not writable"
+  exit 1
+  fi
+}
+
+sort medicalRecord.txt > temp
+cat temp > medicalRecord.txt
+
+check_file medicalTest.txt
+check_file medicalRecord.txt
 
 filter_spaces medicalRecord.txt
 filter_spaces medicalTest.txt
@@ -50,7 +64,7 @@ while true; do
   case "$option"
   in
 
-  1) ;;
+  1) ./insertRecord.sh;;
   2)
     echo "enter patient ID"
     read id
@@ -64,8 +78,12 @@ while true; do
     echo ""
     ;;
 
-  4);;
-  5);;
+  4)
+    printf "\n________ Statistics _________\n\n"
+    ./getTestAvgs.sh
+    printf "\n\n";;
+
+  5) ./updateTestVal.sh;;
   6) exit 0;;
   *) printf "Invalid option...\n\n";;
 
