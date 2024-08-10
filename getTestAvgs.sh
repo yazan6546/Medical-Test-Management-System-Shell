@@ -49,14 +49,13 @@ do
 
 	if [ ${instance_count[$j]} -gt 0 ]
 	then
-		avgs["$j"]=$(echo "${instance_val[$j]} / ${instance_count[$j]}" | bc)
+		avgs["$j"]=$(echo "scale=1;${instance_val[$j]} / ${instance_count[$j]}" | bc)
 	else
 		avgs["$j"]=-1
 	fi
 	j=$(("$j"+1))
 
 done 
-
 
 j=0
 while IFS= read -r line
