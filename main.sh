@@ -33,7 +33,7 @@ remove_blank_lines() {
 check_file() {
 
 file_name=$1
-  if [ ! -w $file_name ]
+  if [ ! -w "$file_name" ]
   then
       echo "$file_name Does not exist or is not writable"
   exit 1
@@ -77,8 +77,8 @@ while true; do
     echo ""
     ;;
 
-  4);;
-  5);;
+  4) ./getTestAvgs.sh;;
+  5) ./updateTestVal.sh;;
   6) exit 0;;
   *) printf "Invalid option...\n\n";;
 
