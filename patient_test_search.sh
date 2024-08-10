@@ -4,7 +4,7 @@ handle_find_case() {
 
   if [ "${#arr[@]}" -eq 0 ]
   then
-      echo "ID not found..."
+      echo "ID not found...."
       echo ""
       return 1
   fi
@@ -43,6 +43,7 @@ handle_find_case() {
          echo "";;
 
       5) break;;
+      *) printf "Invalid option...\n\n"
     esac
   done
 }

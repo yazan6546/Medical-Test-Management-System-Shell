@@ -67,7 +67,7 @@ while true; do
   4);;
   5);;
   6) exit 0;;
-  *) echo "Wrong option!";;
+  *) printf "Invalid option...\n\n";;
 
   esac
 done
