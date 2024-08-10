@@ -40,7 +40,8 @@ file_name=$1
   fi
 }
 
-
+sort medicalRecord.txt > temp
+cat temp > medicalRecord.txt
 
 check_file medicalTest.txt
 check_file medicalRecord.txt
