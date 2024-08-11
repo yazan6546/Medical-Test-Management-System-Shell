@@ -1,4 +1,5 @@
 source patient_test_search.sh
+source delete_test.sh
 
 show_menu() {
   printf "________Medical Test Management System_________\n\n"
@@ -7,7 +8,8 @@ show_menu() {
   echo "3) Search for all abnormal tests"
   echo "4) Get the average test values"
   echo "5) Update an existing test result"
-  echo "6) Exit program"
+  echo "6) Delete a test"
+  echo "7) Exit program"
   echo ""
 }
 
@@ -32,7 +34,7 @@ remove_blank_lines() {
 
 check_file() {
 
-file_name=$1
+  file_name=$1
   if [ ! -w "$file_name" ]
   then
       echo "$file_name Does not exist or is not writable"
@@ -40,8 +42,6 @@ file_name=$1
   fi
 }
 
-sort medicalRecord.txt > temp
-cat temp > medicalRecord.txt
 
 check_file medicalTest.txt
 check_file medicalRecord.txt
@@ -51,6 +51,11 @@ filter_spaces medicalTest.txt
 
 remove_blank_lines medicalRecord.txt
 remove_blank_lines medicalTest.txt
+
+sort medicalRecord.txt > temp
+mv temp medicalRecord.txt
+
+delete_incorrect_test
 
 #find_patient_tests 1300511
 #
@@ -84,7 +89,8 @@ while true; do
     printf "\n\n";;
 
   5) ./updateTestVal.sh;;
-  6) exit 0;;
+  6) delete_test;;
+  7) exit 0;;
   *) printf "Invalid option...\n\n";;
 
   esac
