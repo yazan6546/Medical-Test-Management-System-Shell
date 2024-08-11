@@ -121,6 +121,7 @@ test_unit=$(grep -i "${test_name};" medicalTest.txt | cut -d";" -f3)
 
 echo "Insert the status of the test:"
 read test_status
+test_status=$(echo "$test_status" | tr -d " ")
 echo ""
 
 while ! echo "$test_status" | grep -qiE 'completed|pending|reviewed';
@@ -135,7 +136,10 @@ do
         fi
 
 done
+record=$(echo "$record_id:$test_name,$test_date,$test_result,$test_unit,$test_status" | tr -d " ")
+echo "$record" >> medicalRecord.txt
 
-echo "$record_id:$test_name,$test_date,$test_result,$test_unit,$test_status" >> medicalRecord.txt
+sort medicalRecord.txt > temp
+mv temp medicalRecord.txt
 
 printf "Insertion completed successfully!\n\n"

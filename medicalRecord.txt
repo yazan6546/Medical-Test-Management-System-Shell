@@ -1,6 +1,3 @@
-1234241:rbc,1999-12,20,g/dL,completed
-1234561:ldl,2003-09,19.5,mg/dL,pending
-1234567:rbc,1000-12,12.5,g/dL,COMPLETED
 1234567:rbc,1999-12,10.9,g/dL,completed
 1234568:systole,1999-03,99.2,mmHg,reviewed
 1300500:RBC,2024-03,13.8,mg/dL,completed
