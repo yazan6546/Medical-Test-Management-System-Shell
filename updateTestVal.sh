@@ -1,44 +1,25 @@
-echo "enter the ID of the record you want to update:"
+  cat -n medicalRecord.txt
 
-read record_id
+  echo ""
+  echo "Enter the line number of the test you want to update."
+  
+  med_record_count=$(wc -l < medicalRecord.txt)
+  
+  read line
+  line=$(echo "$line" | tr -d " ")
 
-id_len=$(echo -n  $record_id | wc -m) #count number of characters in users input
+  while ! [[ "$line" =~ ^[0-9]+$ ]] || [ "$line" -gt "$med_record_count" ] # checks if the input is in the right format
+  do
+	  echo "You need to enter a valid number. or -1 to exit input"
+	  read line
+	  echo ""
 
-while [[ $id_len -ne 7  ||  ! $record_id =~ ^[0-9]+$ ]] #enters correction if ID contains alphabetics or not 7 characters long
-do
-        echo "ID length should be 7 digits, please reneter a correct ID or enter -1 to cancel: "
-
-        read record_id
-
-        id_len=$(echo -n  $record_id | wc -c)
-
-        if [ $record_id = -1 ] #exits the operation 
-        then
-                echo "Insertion cancelled"
-                exit 1
-        fi
-done
-
-line_to_update="-1"
-
-while IFS= read -r line
-do
-	line_id=$(echo "$line" | cut -d":" -f1)
-	
-	if [ $line_id = $record_id ]
-	then
-		line_to_update=$(echo "$line")
-		$(sed -i "/$line_id/d" ./medicalRecord.txt)
-		break
-	fi
-done < medicalRecord.txt
-
-echo $line_to_update
-if [ $line_to_update = "-1" ] 
-then
-	"No record matches the ID you have entered."
-	exit 1
-fi
+	  if [[ "$line" == "-1" ]]
+	  then
+		  printf "update cancelled\n\n"
+		  exit 1
+	  fi
+  done
 
 
 echo "Insert new test result:"
@@ -52,22 +33,20 @@ do
 	read new_test_result
 	if [ $new_test_result = -1 ]
         then
-                echo "Insertion cancelled"
-                echo $line_to_update >> medicalRecord.txt
-                exit 1
+                echo "Update cancelled"
+                exit 2
         fi 
 done
 
 
-old_test_result=$(echo $line_to_update | cut -d"," -f3 | sed 's/^[ \t]*//;s/[ \t]*$//')
+old_test_result=$(sed -n "${line}p" medicalRecord.txt | cut -d"," -f3 | sed 's/^[ \t]*//;s/[ \t]*$//')
 
-updated_line=$(echo $line_to_update | sed "s/$old_test_result/$new_test_result/")
 
-echo $updated_line >> medicalRecord.txt
+  sed "${line}s/${old_test_result}/${new_test_result}/g" medicalRecord.txt > temp
+  mv temp medicalRecord.txt
+
+  echo "Record #${line} successfully updated."
+  echo ""
+  
+  cat -n medicalRecord.txt
 	
-	
-
-
-	
-
-
