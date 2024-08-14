@@ -55,8 +55,6 @@ remove_blank_lines medicalTest.txt
 sort medicalRecord.txt > temp
 mv temp medicalRecord.txt
 
-delete_incorrect_test
-
 #find_patient_tests 1300511
 #
 #echo "${arr[@]}" | tr " " "\n"

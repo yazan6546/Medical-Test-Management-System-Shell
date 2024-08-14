@@ -22,7 +22,7 @@ id_len=$(echo -n  "$record_id" | wc -m) #count number of characters in users inp
 while [[ $id_len -ne 7  ||  ! $record_id =~ ^[0-9]+$ ]] #enters correction if ID contains alphabetics or not 7 characters long
 do
         echo "ID length should be 7 digits, please reneter a correct ID or enter -1 to cancel: "
-ve        read record_id
+        read record_id
         echo ""
 
         id_len=$(echo -n  $record_id | wc -c)

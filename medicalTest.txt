@@ -3,3 +3,8 @@ BGT;>70,<99;mg/dL
 LDL;<100;mg/dL
 systole;<120;mmHg
 diastole;<80;mmHg
+HGB;>13.5,<17.5;g/dL
+PLT;>150,<450;K/uL
+TRG;<150;mg/dL
+HDL;>40,<60;mg/dL
+WBC;>4.0,<11.0;K/uL
